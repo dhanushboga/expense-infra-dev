@@ -38,13 +38,13 @@ resource "aws_security_group_rule" "mysql_backend" {
   security_group_id = module.sql_sg.id
 }
 
-resource "aws_security_group_rule" "frontend_backend" {
+resource "aws_security_group_rule" "backend_frontend" {
   type              = "ingress"
   from_port         = 8080
   to_port           = 8080
   protocol          = "tcp"
   source_security_group_id = module.frontend_sg.id
-  security_group_id = module.frontend_sg.id
+  security_group_id = module.backend_sg.id
 }
 
 resource "aws_security_group_rule" "frontend_public" {
