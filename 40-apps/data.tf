@@ -56,3 +56,8 @@ data "aws_ssm_parameter" "mysql_sg" {
   
   name = "/${var.Project_name}/${var.environment}/mysql_sg"
 }
+
+data "aws_ssm_parameter" "ansible_sg" {
+  
+  name = "/${var.Project_name}/${var.environment}/ansible_sg"
+}

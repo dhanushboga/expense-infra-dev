@@ -32,3 +32,12 @@ variable "mysql_tags" {
   }
 }
 
+variable "ansible_tags"{
+  default = {
+    component = "ansible"
+  }
+}
+
+variable "zone_name" {
+  default = "chenchudaws82s.online"
+}
