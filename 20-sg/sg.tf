@@ -1,4 +1,4 @@
-module "sql_sg" {
+module "mysql_sg" {
   source = "git::https://github.com/dhanushboga/sg-module.git?ref=main"
   Project_name = var.Project_name
   environment = var.environment
@@ -29,13 +29,23 @@ module "frontend_sg" {
   
 }
 
+module "bastion_sg" {
+  source = "git::https://github.com/dhanushboga/sg-module.git?ref=main"
+  Project_name = var.Project_name
+  environment = var.environment
+  common_tags = var.common_tags
+  sg_name = "bastion"
+  vpc_id = data.aws_ssm_parameter.vpc_id.value
+  
+}
+
 resource "aws_security_group_rule" "mysql_backend" {
   type              = "ingress"
   from_port         = 3306
   to_port           = 3306
   protocol          = "tcp"
   source_security_group_id = module.backend_sg.id
-  security_group_id = module.sql_sg.id
+  security_group_id = module.mysql_sg.id
 }
 
 resource "aws_security_group_rule" "backend_frontend" {
@@ -53,5 +63,33 @@ resource "aws_security_group_rule" "frontend_public" {
   to_port           = 80
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.frontend_sg.id
+}
+
+resource "aws_security_group_rule" "mysql_bastion" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  source_security_group_id = module.bastion_sg.id
+  security_group_id = module.mysql_sg.id
+}
+
+
+resource "aws_security_group_rule" "backend_bastion" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  source_security_group_id = module.bastion_sg.id
+  security_group_id = module.backend_sg.id
+}
+
+resource "aws_security_group_rule" "frontend_bastion" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  source_security_group_id = module.bastion_sg.id
   security_group_id = module.frontend_sg.id
 }
