@@ -10,7 +10,7 @@ module "bastion" {
 
   tags = merge(var.common_tags,var.bastion_tags,
   {
-    Name = "${local.resource_name}-bastion"
+    Name = local.resource_name
   }
   
   )

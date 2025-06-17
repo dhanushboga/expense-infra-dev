@@ -73,43 +73,45 @@ module "ansible" {
   )
 }
 
-module "records" {
-  source  = "terraform-aws-modules/route53/aws//modules/records"
-
-  zone_name = var.zone_name
-
-  records = [
-    {
-      name    = "mysql"
-      type    = "A"
-      ttl     = 1
-      records = [
-        module.mysql.private_ip
-      ]
-    },
-    {
-      name    = "backend"
-      type    = "A"
-      ttl     = 1
-      records = [
-        module.backend.private_ip
-      ]
-    },
-    {
-      name    = "frontend"
-      type    = "A"
-      ttl     = 1
-      records = [
-        module.frontend.private_ip
-      ]
-    },
-    {
-      name    = ""
-      type    = "A"
-      ttl     = 1
-      records = [
-        module.frontend.public_ip
-      ]
-    }
-  ]
+resource "aws_route53_zone" "expense" {
+  name = var.zone_name
 }
+
+resource "aws_route53_record" "expense_mysql" {
+  zone_id = aws_route53_zone.expense.zone_id
+  name    = "mysql.${var.zone_name}" # add your desired domain name
+  type    = "A"
+  ttl     = 1
+  records = [module.mysql.private_ip]
+  allow_overwrite = true
+}
+
+resource "aws_route53_record" "expense_backend" {
+  zone_id = aws_route53_zone.expense.zone_id
+  name    = "backend.${var.zone_name}" # add your desired domain name
+  type    = "A"
+  ttl     = 1
+  records = [module.backend.private_ip]
+  allow_overwrite = true
+}
+
+
+resource "aws_route53_record" "expense_frontend" {
+  zone_id = aws_route53_zone.expense.zone_id
+  name    = "frontend.${var.zone_name}" # add your desired domain name
+  type    = "A"
+  ttl     = 1
+  records = [module.frontend.public_ip]
+  allow_overwrite = true
+}
+
+resource "aws_route53_record" "expense_access" {
+  zone_id = aws_route53_zone.expense.zone_id
+  name    = "" # add your desired domain name
+  type    = "A"
+  ttl     = 1
+  records = [module.frontend.public_ip]
+  allow_overwrite = true
+}
+
+
