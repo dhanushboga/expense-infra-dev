@@ -101,7 +101,7 @@ resource "aws_route53_record" "expense_frontend" {
   name    = "frontend.${var.zone_name}" # add your desired domain name
   type    = "A"
   ttl     = 1
-  records = [module.frontend.public_ip]
+  records = [module.frontend.private_ip]
   allow_overwrite = true
 }
 

@@ -10,7 +10,7 @@ terraform {
     bucket         = "82s-chenchu-state"
     key            = "expense-sg" #unique keys within the bucket and same key cannot be use
     region         = "us-east-1"
-    dynamodb_table = "82s-chenchu"
+    dynamodb_table = "82s-chenchu-1"
   }
 }
 
